@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { BarChart3, Users, BookOpen, TrendingUp, AlertTriangle } from "lucide-react";
+import { BarChart3, Users, BookOpen, TrendingUp, AlertTriangle, Download } from "lucide-react";
+import { exportToCSV } from "@/lib/csv-export";
+import { toast } from "sonner";
 
 export default function Analytics() {
   const { role, user } = useAuth();
@@ -28,12 +30,32 @@ export default function Analytics() {
     load();
   }, []);
 
-  const atRiskCount = Math.floor(stats.totalStudents * 0.15); // simulated
+  const atRiskCount = Math.floor(stats.totalStudents * 0.15);
+
+  const handleExport = async () => {
+    const { data } = await supabase.from("enrollments").select("user_id, course_id, progress, enrolled_at, completed_at, courses(title), profiles!enrollments_user_id_fkey(full_name)");
+    if (!data || data.length === 0) { toast.info("No data to export"); return; }
+    exportToCSV(data.map((d: any) => ({
+      student: (d.profiles as any)?.full_name || "Unknown",
+      course: (d.courses as any)?.title || "N/A",
+      progress: `${Math.round(Number(d.progress) || 0)}%`,
+      enrolled: d.enrolled_at,
+      completed: d.completed_at || "In Progress",
+    })), "analytics_report");
+    toast.success("Report exported!");
+  };
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-bold text-foreground mb-1">Analytics</h1>
-      <p className="text-muted-foreground mb-6">Platform performance insights</p>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-foreground">Analytics</h1>
+          <p className="text-muted-foreground text-sm">Platform performance insights</p>
+        </div>
+        <button onClick={handleExport} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium text-foreground hover:bg-muted transition-colors">
+          <Download className="w-4 h-4" /> Export CSV
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-card rounded-2xl p-5 shadow-card">
