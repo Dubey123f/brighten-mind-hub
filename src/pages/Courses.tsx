@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { BookOpen, Plus, Search, Filter } from "lucide-react";
@@ -6,6 +7,7 @@ import { toast } from "sonner";
 
 export default function CoursesPage() {
   const { role, user } = useAuth();
+  const navigate = useNavigate();
   const [courses, setCourses] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
@@ -125,7 +127,7 @@ export default function CoursesPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map(c => (
-            <div key={c.id} className="bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all group">
+            <div key={c.id} onClick={() => navigate(`/dashboard/courses/${c.id}`)} className="bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all group cursor-pointer">
               <div className="h-36 gradient-primary relative">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(255,255,255,0.15),transparent)]" />
                 <div className="absolute bottom-3 left-3">
@@ -139,7 +141,7 @@ export default function CoursesPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-muted-foreground">by {c.profiles?.full_name || "Unknown"}</span>
                   {role === "student" && (
-                    <button onClick={() => handleEnroll(c.id)} className="text-xs font-medium text-primary hover:underline">
+                    <button onClick={(e) => { e.stopPropagation(); handleEnroll(c.id); }} className="text-xs font-medium text-primary hover:underline">
                       Enroll
                     </button>
                   )}

@@ -8,6 +8,8 @@ import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Courses from "./pages/Courses";
+import CourseDetail from "./pages/CourseDetail";
+import LessonPlayer from "./pages/LessonPlayer";
 import Quizzes from "./pages/Quizzes";
 import Progress from "./pages/Progress";
 import Leaderboard from "./pages/Leaderboard";
@@ -51,6 +53,8 @@ const AppRoutes = () => (
     <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
     <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
     <Route path="/dashboard/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
+    <Route path="/dashboard/courses/:courseId" element={<ProtectedRoute><CourseDetail /></ProtectedRoute>} />
+    <Route path="/dashboard/courses/:courseId/lessons/:lessonId" element={<ProtectedRoute><LessonPlayer /></ProtectedRoute>} />
     <Route path="/dashboard/quizzes" element={<ProtectedRoute><Quizzes /></ProtectedRoute>} />
     <Route path="/dashboard/progress" element={<ProtectedRoute><Progress /></ProtectedRoute>} />
     <Route path="/dashboard/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
