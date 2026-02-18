@@ -30,65 +30,121 @@ function StatCard({ icon: Icon, label, value, trend, color }: {
 
 // Admin Dashboard
 function AdminDashboard() {
-  const [stats, setStats] = useState({ users: 0, courses: 0, enrollments: 0 });
+  const [stats, setStats] = useState({ users: 0, courses: 0, enrollments: 0, completionRate: 0 });
+  const [recentActivity, setRecentActivity] = useState<{ text: string; time: string }[]>([]);
 
   useEffect(() => {
     const load = async () => {
       const [u, c, e] = await Promise.all([
         supabase.from("profiles").select("id", { count: "exact", head: true }),
         supabase.from("courses").select("id", { count: "exact", head: true }),
-        supabase.from("enrollments").select("id", { count: "exact", head: true }),
+        supabase.from("enrollments").select("progress, completed_at"),
       ]);
-      setStats({ users: u.count || 0, courses: c.count || 0, enrollments: e.count || 0 });
+      const enrollmentData = e.data || [];
+      const completed = enrollmentData.filter((en: any) => en.completed_at).length;
+      const rate = enrollmentData.length > 0 ? Math.round((completed / enrollmentData.length) * 100) : 0;
+      setStats({ users: u.count || 0, courses: c.count || 0, enrollments: enrollmentData.length, completionRate: rate });
+
+      // Recent activity: latest enrollments, courses, and user signups
+      const [recentEnrollments, recentCourses, recentUsers] = await Promise.all([
+        supabase.from("enrollments").select("enrolled_at, courses(title), profiles!enrollments_user_id_fkey(full_name)").order("enrolled_at", { ascending: false }).limit(3),
+        supabase.from("courses").select("title, created_at").order("created_at", { ascending: false }).limit(2),
+        supabase.from("profiles").select("full_name, created_at").order("created_at", { ascending: false }).limit(2),
+      ]);
+
+      const activities: { text: string; time: string }[] = [];
+      (recentUsers.data || []).forEach((u: any) => {
+        activities.push({ text: `${u.full_name || "New user"} registered`, time: u.created_at });
+      });
+      (recentCourses.data || []).forEach((c: any) => {
+        activities.push({ text: `Course '${c.title}' created`, time: c.created_at });
+      });
+      (recentEnrollments.data || []).forEach((en: any) => {
+        activities.push({ text: `${(en.profiles as any)?.full_name || "Student"} enrolled in '${(en.courses as any)?.title || "a course"}'`, time: en.enrolled_at });
+      });
+      activities.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+      setRecentActivity(activities.slice(0, 5));
     };
     load();
   }, []);
+
+  const timeAgo = (dateStr: string) => {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return `${Math.floor(hours / 24)}d ago`;
+  };
 
   return (
     <div>
       <h1 className="font-display text-2xl font-bold text-foreground mb-1">Admin Dashboard</h1>
       <p className="text-muted-foreground mb-6">Platform overview and management</p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard icon={Users} label="Total Users" value={stats.users} trend="+12%" />
-        <StatCard icon={BookOpen} label="Total Courses" value={stats.courses} trend="+5%" />
-        <StatCard icon={GraduationCap} label="Enrollments" value={stats.enrollments} trend="+18%" />
-        <StatCard icon={BarChart3} label="Completion Rate" value="78%" trend="+3%" />
+        <StatCard icon={Users} label="Total Users" value={stats.users} />
+        <StatCard icon={BookOpen} label="Total Courses" value={stats.courses} />
+        <StatCard icon={GraduationCap} label="Enrollments" value={stats.enrollments} />
+        <StatCard icon={BarChart3} label="Completion Rate" value={`${stats.completionRate}%`} />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-card rounded-2xl p-6 shadow-card">
           <h3 className="font-display font-semibold text-foreground mb-4">Recent Activity</h3>
           <div className="space-y-3">
-            {["New student registered", "Course 'Python Basics' published", "Quiz completed by 15 students", "New instructor onboarded"].map((a, i) => (
+            {recentActivity.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No recent activity yet.</p>
+            ) : recentActivity.map((a, i) => (
               <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
                 <div className="w-2 h-2 rounded-full bg-primary" />
-                <span className="text-sm text-foreground">{a}</span>
-                <span className="text-xs text-muted-foreground ml-auto">{i + 1}h ago</span>
+                <span className="text-sm text-foreground">{a.text}</span>
+                <span className="text-xs text-muted-foreground ml-auto">{timeAgo(a.time)}</span>
               </div>
             ))}
           </div>
         </div>
         <div className="bg-card rounded-2xl p-6 shadow-card">
-          <h3 className="font-display font-semibold text-foreground mb-4">Platform Health</h3>
-          <div className="space-y-4">
-            {[
-              { label: "Server Uptime", value: "99.9%", pct: 99.9 },
-              { label: "API Response Time", value: "45ms", pct: 95 },
-              { label: "Storage Used", value: "2.4 GB", pct: 24 },
-              { label: "Active Sessions", value: "342", pct: 68 },
-            ].map((m) => (
-              <div key={m.label}>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-muted-foreground">{m.label}</span>
-                  <span className="font-medium text-foreground">{m.value}</span>
-                </div>
-                <div className="h-2 rounded-full bg-muted overflow-hidden">
-                  <div className="h-full rounded-full gradient-primary transition-all" style={{ width: `${m.pct}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
+          <h3 className="font-display font-semibold text-foreground mb-4">Course Breakdown</h3>
+          <CourseBreakdown />
         </div>
       </div>
+    </div>
+  );
+}
+
+function CourseBreakdown() {
+  const [courses, setCourses] = useState<{ title: string; enrollments: number }[]>([]);
+
+  useEffect(() => {
+    const load = async () => {
+      const { data } = await supabase.from("courses").select("title, enrollments(id)").limit(5);
+      if (data) {
+        const mapped = data.map((c: any) => ({
+          title: c.title,
+          enrollments: Array.isArray(c.enrollments) ? c.enrollments.length : 0,
+        })).sort((a, b) => b.enrollments - a.enrollments);
+        setCourses(mapped);
+      }
+    };
+    load();
+  }, []);
+
+  const max = Math.max(...courses.map(c => c.enrollments), 1);
+
+  return (
+    <div className="space-y-4">
+      {courses.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No courses created yet.</p>
+      ) : courses.map((c) => (
+        <div key={c.title}>
+          <div className="flex justify-between text-sm mb-1">
+            <span className="text-muted-foreground truncate mr-2">{c.title}</span>
+            <span className="font-medium text-foreground">{c.enrollments} enrolled</span>
+          </div>
+          <div className="h-2 rounded-full bg-muted overflow-hidden">
+            <div className="h-full rounded-full gradient-primary transition-all" style={{ width: `${(c.enrollments / max) * 100}%` }} />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -97,10 +153,32 @@ function AdminDashboard() {
 function InstructorDashboard() {
   const { user } = useAuth();
   const [courseCount, setCourseCount] = useState(0);
+  const [studentCount, setStudentCount] = useState(0);
+  const [avgCompletion, setAvgCompletion] = useState(0);
+  const [quizCount, setQuizCount] = useState(0);
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("courses").select("id", { count: "exact", head: true }).eq("created_by", user.id).then(r => setCourseCount(r.count || 0));
+    const load = async () => {
+      // Get instructor's courses
+      const { data: courses } = await supabase.from("courses").select("id").eq("created_by", user.id);
+      const courseIds = (courses || []).map((c: any) => c.id);
+      setCourseCount(courseIds.length);
+
+      if (courseIds.length > 0) {
+        // Get enrollments for those courses
+        const { data: enrollments } = await supabase.from("enrollments").select("user_id, progress").in("course_id", courseIds);
+        const uniqueStudents = new Set((enrollments || []).map((e: any) => e.user_id));
+        setStudentCount(uniqueStudents.size);
+        const progresses = (enrollments || []).map((e: any) => Number(e.progress) || 0);
+        setAvgCompletion(progresses.length > 0 ? Math.round(progresses.reduce((a, b) => a + b, 0) / progresses.length) : 0);
+
+        // Quiz count
+        const { count } = await supabase.from("quizzes").select("id", { count: "exact", head: true }).in("course_id", courseIds);
+        setQuizCount(count || 0);
+      }
+    };
+    load();
   }, [user]);
 
   return (
@@ -108,10 +186,10 @@ function InstructorDashboard() {
       <h1 className="font-display text-2xl font-bold text-foreground mb-1">Instructor Dashboard</h1>
       <p className="text-muted-foreground mb-6">Manage your courses and students</p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard icon={BookOpen} label="My Courses" value={courseCount} trend="+2" />
-        <StatCard icon={Users} label="Total Students" value="124" trend="+8%" />
-        <StatCard icon={Target} label="Avg. Completion" value="72%" trend="+5%" />
-        <StatCard icon={TrendingUp} label="Engagement" value="89%" trend="+3%" />
+        <StatCard icon={BookOpen} label="My Courses" value={courseCount} />
+        <StatCard icon={Users} label="Total Students" value={studentCount} />
+        <StatCard icon={Target} label="Avg. Completion" value={`${avgCompletion}%`} />
+        <StatCard icon={Trophy} label="Quizzes Created" value={quizCount} />
       </div>
       <div className="bg-card rounded-2xl p-6 shadow-card">
         <h3 className="font-display font-semibold text-foreground mb-4">Quick Actions</h3>
@@ -160,9 +238,9 @@ function StudentDashboard() {
       <p className="text-muted-foreground mb-6">Continue your learning journey</p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard icon={BookOpen} label="Enrolled Courses" value={enrollments.length} />
-        <StatCard icon={Award} label="Points Earned" value={points} trend="+50" />
+        <StatCard icon={Award} label="Points Earned" value={points} />
         <StatCard icon={Flame} label="Day Streak" value={streak} />
-        <StatCard icon={Target} label="Mastery Level" value="Intermediate" />
+        <StatCard icon={Target} label="Completed" value={enrollments.filter((e: any) => e.completed_at).length} />
       </div>
 
       {enrollments.length > 0 ? (
@@ -202,28 +280,64 @@ function StudentDashboard() {
 
 // Parent Dashboard
 function ParentDashboard() {
+  const { user } = useAuth();
+  const [childData, setChildData] = useState<{ name: string; courses: number; quizAvg: number; studyTime: number }[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    const load = async () => {
+      // Get linked children
+      const { data: links } = await supabase.from("parent_child_links").select("child_id").eq("parent_id", user.id);
+      if (!links || links.length === 0) return;
+
+      const childIds = links.map((l: any) => l.child_id);
+      const results: typeof childData = [];
+
+      for (const childId of childIds) {
+        const [profile, enrollments, attempts, lessonProg] = await Promise.all([
+          supabase.from("profiles").select("full_name").eq("user_id", childId).maybeSingle(),
+          supabase.from("enrollments").select("id", { count: "exact", head: true }).eq("user_id", childId),
+          supabase.from("quiz_attempts").select("score, max_score").eq("user_id", childId).not("completed_at", "is", null),
+          supabase.from("lesson_progress").select("time_spent_seconds").eq("user_id", childId),
+        ]);
+        const scores = (attempts.data || []).map((a: any) => (Number(a.score) || 0) / Math.max(Number(a.max_score) || 1, 1));
+        const avgScore = scores.length > 0 ? Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 100) : 0;
+        const totalTime = (lessonProg.data || []).reduce((sum: number, lp: any) => sum + (lp.time_spent_seconds || 0), 0);
+
+        results.push({
+          name: profile.data?.full_name || "Child",
+          courses: enrollments.count || 0,
+          quizAvg: avgScore,
+          studyTime: Math.round(totalTime / 3600),
+        });
+      }
+      setChildData(results);
+    };
+    load();
+  }, [user]);
+
   return (
     <div>
       <h1 className="font-display text-2xl font-bold text-foreground mb-1">Parent Dashboard</h1>
       <p className="text-muted-foreground mb-6">Monitor your child's learning progress</p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard icon={BookOpen} label="Enrolled Courses" value={3} />
-        <StatCard icon={BarChart3} label="Overall Grade" value="B+" trend="+5%" />
-        <StatCard icon={Clock} label="Study Time" value="12h" />
-        <StatCard icon={Trophy} label="Achievements" value={7} />
-      </div>
-      <div className="bg-card rounded-2xl p-6 shadow-card">
-        <h3 className="font-display font-semibold text-foreground mb-4">Child's Recent Activity</h3>
-        <div className="space-y-3">
-          {["Completed 'Data Structures' Module 3", "Scored 92% on Python Quiz", "Enrolled in 'Machine Learning Basics'", "Earned 'Quick Learner' badge"].map((a, i) => (
-            <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-              <div className="w-2 h-2 rounded-full bg-success" />
-              <span className="text-sm text-foreground">{a}</span>
-              <span className="text-xs text-muted-foreground ml-auto">{i === 0 ? "Today" : `${i}d ago`}</span>
-            </div>
-          ))}
+
+      {childData.length === 0 ? (
+        <div className="bg-card rounded-2xl p-12 text-center shadow-card">
+          <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="font-display font-semibold text-foreground mb-2">No Linked Children</h3>
+          <p className="text-muted-foreground">Link your child's account to view their progress.</p>
         </div>
-      </div>
+      ) : childData.map((child, idx) => (
+        <div key={idx} className="mb-8">
+          <h3 className="font-display font-semibold text-foreground mb-4">{child.name}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatCard icon={BookOpen} label="Enrolled Courses" value={child.courses} />
+            <StatCard icon={BarChart3} label="Quiz Average" value={`${child.quizAvg}%`} />
+            <StatCard icon={Clock} label="Study Time" value={`${child.studyTime}h`} />
+            <StatCard icon={Trophy} label="Quizzes Taken" value={child.quizAvg > 0 ? "Active" : "None"} />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
