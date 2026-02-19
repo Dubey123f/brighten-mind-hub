@@ -4,14 +4,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { GraduationCap, Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-type AppRole = "admin" | "instructor" | "student" | "parent";
-
-const roles: { value: AppRole; label: string; desc: string }[] = [
-  { value: "student", label: "Student", desc: "Enroll & learn" },
-  { value: "instructor", label: "Instructor", desc: "Create courses" },
-  { value: "parent", label: "Parent", desc: "Monitor progress" },
-  { value: "admin", label: "Admin", desc: "Manage platform" },
-];
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -19,7 +11,6 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const [role, setRole] = useState<AppRole>("student");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { signUp, signIn } = useAuth();
@@ -30,7 +21,7 @@ const Auth = () => {
     setLoading(true);
     try {
       if (isSignUp) {
-        await signUp(email, password, fullName, role);
+        await signUp(email, password, fullName, "student");
         toast.success("Account created! Redirecting...");
       } else {
         await signIn(email, password);
@@ -126,28 +117,6 @@ const Auth = () => {
               </div>
             </div>
 
-            {isSignUp && (
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">I am a...</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {roles.map((r) => (
-                    <button
-                      key={r.value}
-                      type="button"
-                      onClick={() => setRole(r.value)}
-                      className={`p-3 rounded-lg border text-left transition-all ${
-                        role === r.value
-                          ? "border-primary bg-primary/5 ring-2 ring-primary/20"
-                          : "border-input hover:border-primary/30"
-                      }`}
-                    >
-                      <span className="text-sm font-medium text-foreground">{r.label}</span>
-                      <span className="text-xs text-muted-foreground block">{r.desc}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
 
             <button
               type="submit"
