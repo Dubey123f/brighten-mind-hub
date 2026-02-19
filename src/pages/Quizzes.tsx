@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { ClipboardList, Plus, Clock, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 
 export default function QuizzesPage() {
+  const navigate = useNavigate();
   const { role, user } = useAuth();
   const [quizzes, setQuizzes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -102,8 +104,19 @@ export default function QuizzesPage() {
                 <p className="text-xs text-muted-foreground">{(q.courses as any)?.title || "No course"} • {q.time_limit_minutes ? `${q.time_limit_minutes} min` : "No time limit"}</p>
               </div>
               {role === "student" && (
-                <button className="px-4 py-2 rounded-lg border border-primary text-primary text-sm font-medium hover:bg-primary/5 transition-colors">
+                <button
+                  onClick={() => navigate(`/dashboard/quizzes/${q.id}`)}
+                  className="px-4 py-2 rounded-lg border border-primary text-primary text-sm font-medium hover:bg-primary/5 transition-colors"
+                >
                   Start Quiz
+                </button>
+              )}
+              {(role === "instructor" || role === "admin") && (
+                <button
+                  onClick={() => navigate(`/dashboard/quizzes/${q.id}/manage`)}
+                  className="px-4 py-2 rounded-lg border border-border text-foreground text-sm font-medium hover:bg-muted transition-colors"
+                >
+                  Manage
                 </button>
               )}
             </div>
