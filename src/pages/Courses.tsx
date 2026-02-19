@@ -16,14 +16,22 @@ export default function CoursesPage() {
 
   const loadCourses = async () => {
     setLoading(true);
-    let q = supabase.from("courses").select("*, profiles!courses_created_by_fkey(full_name)");
+    let q = supabase.from("courses").select("*");
     if (role === "instructor" && user) {
       q = q.eq("created_by", user.id);
     } else {
       q = q.eq("is_published", true);
     }
     const { data } = await q.order("created_at", { ascending: false });
-    setCourses(data || []);
+    // Fetch creator names
+    const coursesWithNames = await Promise.all((data || []).map(async (c: any) => {
+      if (c.created_by) {
+        const { data: p } = await supabase.from("profiles").select("full_name").eq("user_id", c.created_by).maybeSingle();
+        return { ...c, creator_name: p?.full_name || "Unknown" };
+      }
+      return { ...c, creator_name: "Unknown" };
+    }));
+    setCourses(coursesWithNames);
     setLoading(false);
   };
 
@@ -139,7 +147,7 @@ export default function CoursesPage() {
                 <h4 className="font-display font-semibold text-foreground mt-1 mb-1">{c.title}</h4>
                 <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{c.description || "No description"}</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground">by {c.profiles?.full_name || "Unknown"}</span>
+                  <span className="text-xs text-muted-foreground">by {c.creator_name || "Unknown"}</span>
                   {role === "student" && (
                     <button onClick={(e) => { e.stopPropagation(); handleEnroll(c.id); }} className="text-xs font-medium text-primary hover:underline">
                       Enroll

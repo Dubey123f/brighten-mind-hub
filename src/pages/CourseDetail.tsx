@@ -42,7 +42,7 @@ export default function CourseDetail() {
   const loadCourse = async () => {
     setLoading(true);
     const [cRes, mRes] = await Promise.all([
-      supabase.from("courses").select("*, profiles!courses_created_by_fkey(full_name)").eq("id", courseId!).single(),
+      supabase.from("courses").select("*").eq("id", courseId!).single(),
       supabase.from("modules").select("*").eq("course_id", courseId!).order("sort_order"),
     ]);
     setCourse(cRes.data);

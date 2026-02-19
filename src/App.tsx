@@ -11,6 +11,8 @@ import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
 import LessonPlayer from "./pages/LessonPlayer";
 import Quizzes from "./pages/Quizzes";
+import QuizPlayer from "./pages/QuizPlayer";
+import QuizManage from "./pages/QuizManage";
 import Progress from "./pages/Progress";
 import Leaderboard from "./pages/Leaderboard";
 import Discussions from "./pages/Discussions";
@@ -56,6 +58,8 @@ const AppRoutes = () => (
     <Route path="/dashboard/courses/:courseId" element={<ProtectedRoute><CourseDetail /></ProtectedRoute>} />
     <Route path="/dashboard/courses/:courseId/lessons/:lessonId" element={<ProtectedRoute><LessonPlayer /></ProtectedRoute>} />
     <Route path="/dashboard/quizzes" element={<ProtectedRoute><Quizzes /></ProtectedRoute>} />
+    <Route path="/dashboard/quizzes/:quizId" element={<ProtectedRoute><QuizPlayer /></ProtectedRoute>} />
+    <Route path="/dashboard/quizzes/:quizId/manage" element={<ProtectedRoute><QuizManage /></ProtectedRoute>} />
     <Route path="/dashboard/progress" element={<ProtectedRoute><Progress /></ProtectedRoute>} />
     <Route path="/dashboard/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
     <Route path="/dashboard/discussions" element={<ProtectedRoute><Discussions /></ProtectedRoute>} />
