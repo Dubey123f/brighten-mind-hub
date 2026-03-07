@@ -36,8 +36,6 @@ export default function LiveClassRoom() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
-  const [cameraOn, setCameraOn] = useState(true);
-  const [micOn, setMicOn] = useState(true);
   const [showChat, setShowChat] = useState(true);
   const [profileMap, setProfileMap] = useState<Record<string, string>>({});
   const scrollRef = useRef<HTMLDivElement>(null);
