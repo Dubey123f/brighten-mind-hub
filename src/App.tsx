@@ -23,6 +23,8 @@ import Announcements from "./pages/Announcements";
 import SettingsPage from "./pages/Settings";
 import Reports from "./pages/Reports";
 import StudentsPage from "./pages/Students";
+import LiveClasses from "./pages/LiveClasses";
+import LiveClassRoom from "./pages/LiveClassRoom";
 import DashboardLayout from "./components/DashboardLayout";
 import NotFound from "./pages/NotFound";
 
@@ -70,6 +72,8 @@ const AppRoutes = () => (
     <Route path="/dashboard/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
     <Route path="/dashboard/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
     <Route path="/dashboard/students" element={<ProtectedRoute><StudentsPage /></ProtectedRoute>} />
+    <Route path="/dashboard/live-classes" element={<ProtectedRoute><LiveClasses /></ProtectedRoute>} />
+    <Route path="/dashboard/live-classes/:classId" element={<ProtectedRoute><LiveClassRoom /></ProtectedRoute>} />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );

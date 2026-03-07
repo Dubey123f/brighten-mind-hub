@@ -17,7 +17,7 @@ import {
 import {
   GraduationCap, LayoutDashboard, BookOpen, Users, BarChart3,
   Trophy, MessageSquare, Settings, LogOut, FileText, HelpCircle,
-  Bell, User, Brain, Award, ClipboardList,
+  Bell, User, Brain, Award, ClipboardList, Video,
 } from "lucide-react";
 
 interface NavItem {
@@ -39,6 +39,7 @@ const navByRole: Record<string, NavItem[]> = {
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
     { title: "My Courses", url: "/dashboard/courses", icon: BookOpen },
     { title: "Quizzes", url: "/dashboard/quizzes", icon: ClipboardList },
+    { title: "Live Classes", url: "/dashboard/live-classes", icon: Video },
     { title: "Students", url: "/dashboard/students", icon: Users },
     { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
     { title: "Discussions", url: "/dashboard/discussions", icon: MessageSquare },
@@ -47,6 +48,7 @@ const navByRole: Record<string, NavItem[]> = {
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
     { title: "My Courses", url: "/dashboard/courses", icon: BookOpen },
     { title: "Quizzes", url: "/dashboard/quizzes", icon: ClipboardList },
+    { title: "Live Classes", url: "/dashboard/live-classes", icon: Video },
     { title: "Progress", url: "/dashboard/progress", icon: BarChart3 },
     { title: "Leaderboard", url: "/dashboard/leaderboard", icon: Trophy },
     { title: "Discussions", url: "/dashboard/discussions", icon: MessageSquare },
