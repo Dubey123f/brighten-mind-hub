@@ -72,6 +72,8 @@ const AppRoutes = () => (
     <Route path="/dashboard/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
     <Route path="/dashboard/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
     <Route path="/dashboard/students" element={<ProtectedRoute><StudentsPage /></ProtectedRoute>} />
+    <Route path="/dashboard/live-classes" element={<ProtectedRoute><LiveClasses /></ProtectedRoute>} />
+    <Route path="/dashboard/live-classes/:classId" element={<ProtectedRoute><LiveClassRoom /></ProtectedRoute>} />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );
