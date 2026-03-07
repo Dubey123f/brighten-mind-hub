@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ArrowLeft, Send, Video, Mic, MicOff, VideoOff, Users, MessageSquare, StopCircle } from "lucide-react";
+import { ArrowLeft, Send, Video, VideoOff, MessageSquare, StopCircle } from "lucide-react";
+import JitsiMeeting from "@/components/JitsiMeeting";
 import { toast } from "sonner";
 
 interface ChatMessage {
