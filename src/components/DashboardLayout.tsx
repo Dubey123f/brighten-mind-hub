@@ -17,7 +17,7 @@ import {
 import {
   GraduationCap, LayoutDashboard, BookOpen, Users, BarChart3,
   Trophy, MessageSquare, Settings, LogOut, FileText, HelpCircle,
-  Bell, User, Brain, Award, ClipboardList,
+  Bell, User, Brain, Award, ClipboardList, Video,
 } from "lucide-react";
 
 interface NavItem {
