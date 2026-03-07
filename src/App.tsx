@@ -23,6 +23,8 @@ import Announcements from "./pages/Announcements";
 import SettingsPage from "./pages/Settings";
 import Reports from "./pages/Reports";
 import StudentsPage from "./pages/Students";
+import LiveClasses from "./pages/LiveClasses";
+import LiveClassRoom from "./pages/LiveClassRoom";
 import DashboardLayout from "./components/DashboardLayout";
 import NotFound from "./pages/NotFound";
 
