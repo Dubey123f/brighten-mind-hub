@@ -173,6 +173,7 @@ export default function LiveClassRoom() {
                 onClose={() => navigate("/dashboard/live-classes")}
               />
             )}
+          </div>
         </div>
 
         {/* Chat sidebar */}
