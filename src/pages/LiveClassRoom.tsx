@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ArrowLeft, Send, Video, Mic, MicOff, VideoOff, Users, MessageSquare, StopCircle } from "lucide-react";
+import { ArrowLeft, Send, Video, VideoOff, MessageSquare, StopCircle } from "lucide-react";
+import JitsiMeeting from "@/components/JitsiMeeting";
 import { toast } from "sonner";
 
 interface ChatMessage {
@@ -35,8 +36,6 @@ export default function LiveClassRoom() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
-  const [cameraOn, setCameraOn] = useState(true);
-  const [micOn, setMicOn] = useState(true);
   const [showChat, setShowChat] = useState(true);
   const [profileMap, setProfileMap] = useState<Record<string, string>>({});
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -157,49 +156,24 @@ export default function LiveClassRoom() {
       <div className="flex-1 flex gap-4 pt-4 overflow-hidden">
         {/* Video area */}
         <div className="flex-1 flex flex-col">
-          <div className="flex-1 bg-muted rounded-xl flex items-center justify-center relative overflow-hidden">
+          <div className="flex-1 rounded-xl overflow-hidden">
             {liveClass.status === "ended" ? (
-              <div className="text-center">
-                <VideoOff className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-foreground">Class has ended</h3>
-                <p className="text-muted-foreground">This live session is no longer active</p>
+              <div className="w-full h-full bg-muted flex items-center justify-center">
+                <div className="text-center">
+                  <VideoOff className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground">Class has ended</h3>
+                  <p className="text-muted-foreground">This live session is no longer active</p>
+                </div>
               </div>
             ) : (
-              <div className="text-center">
-                <div className="w-24 h-24 rounded-full gradient-primary flex items-center justify-center mx-auto mb-4">
-                  <Video className="w-10 h-10 text-primary-foreground" />
-                </div>
-                <h3 className="text-lg font-semibold text-foreground">
-                  {isOwner ? "You are presenting" : "Live Session"}
-                </h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {isOwner ? "Your students can see this class" : "Listening to the instructor"}
-                </p>
-              </div>
+              <JitsiMeeting
+                roomName={classId!}
+                displayName={profile?.full_name || "Student"}
+                isHost={isOwner}
+                onClose={() => navigate("/dashboard/live-classes")}
+              />
             )}
           </div>
-
-          {/* Controls */}
-          {liveClass.status === "live" && (
-            <div className="flex items-center justify-center gap-3 py-4">
-              <Button
-                variant={micOn ? "secondary" : "destructive"}
-                size="icon"
-                className="rounded-full w-12 h-12"
-                onClick={() => setMicOn(!micOn)}
-              >
-                {micOn ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
-              </Button>
-              <Button
-                variant={cameraOn ? "secondary" : "destructive"}
-                size="icon"
-                className="rounded-full w-12 h-12"
-                onClick={() => setCameraOn(!cameraOn)}
-              >
-                {cameraOn ? <Video className="w-5 h-5" /> : <VideoOff className="w-5 h-5" />}
-              </Button>
-            </div>
-          )}
         </div>
 
         {/* Chat sidebar */}
