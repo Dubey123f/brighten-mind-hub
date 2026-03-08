@@ -25,6 +25,10 @@ import Reports from "./pages/Reports";
 import StudentsPage from "./pages/Students";
 import LiveClasses from "./pages/LiveClasses";
 import LiveClassRoom from "./pages/LiveClassRoom";
+import Attendance from "./pages/Attendance";
+import Assignments from "./pages/Assignments";
+import Marks from "./pages/Marks";
+import AdminPanel from "./pages/AdminPanel";
 import DashboardLayout from "./components/DashboardLayout";
 import NotFound from "./pages/NotFound";
 
