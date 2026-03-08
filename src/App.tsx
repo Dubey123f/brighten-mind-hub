@@ -25,6 +25,10 @@ import Reports from "./pages/Reports";
 import StudentsPage from "./pages/Students";
 import LiveClasses from "./pages/LiveClasses";
 import LiveClassRoom from "./pages/LiveClassRoom";
+import Attendance from "./pages/Attendance";
+import Assignments from "./pages/Assignments";
+import Marks from "./pages/Marks";
+import AdminPanel from "./pages/AdminPanel";
 import DashboardLayout from "./components/DashboardLayout";
 import NotFound from "./pages/NotFound";
 
@@ -74,6 +78,10 @@ const AppRoutes = () => (
     <Route path="/dashboard/students" element={<ProtectedRoute><StudentsPage /></ProtectedRoute>} />
     <Route path="/dashboard/live-classes" element={<ProtectedRoute><LiveClasses /></ProtectedRoute>} />
     <Route path="/dashboard/live-classes/:classId" element={<ProtectedRoute><LiveClassRoom /></ProtectedRoute>} />
+    <Route path="/dashboard/attendance" element={<ProtectedRoute><Attendance /></ProtectedRoute>} />
+    <Route path="/dashboard/assignments" element={<ProtectedRoute><Assignments /></ProtectedRoute>} />
+    <Route path="/dashboard/marks" element={<ProtectedRoute><Marks /></ProtectedRoute>} />
+    <Route path="/dashboard/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );

@@ -17,7 +17,7 @@ import {
 import {
   GraduationCap, LayoutDashboard, BookOpen, Users, BarChart3,
   Trophy, MessageSquare, Settings, LogOut, FileText, HelpCircle,
-  Bell, User, Brain, Award, ClipboardList, Video,
+  Bell, User, Brain, Award, ClipboardList, Video, CalendarCheck, FileEdit, ShieldCheck,
 } from "lucide-react";
 
 interface NavItem {
@@ -29,8 +29,12 @@ interface NavItem {
 const navByRole: Record<string, NavItem[]> = {
   admin: [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+    { title: "Admin Panel", url: "/dashboard/admin", icon: ShieldCheck },
     { title: "Users", url: "/dashboard/users", icon: Users },
     { title: "Courses", url: "/dashboard/courses", icon: BookOpen },
+    { title: "Attendance", url: "/dashboard/attendance", icon: CalendarCheck },
+    { title: "Assignments", url: "/dashboard/assignments", icon: FileEdit },
+    { title: "Marks", url: "/dashboard/marks", icon: Award },
     { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
     { title: "Announcements", url: "/dashboard/announcements", icon: Bell },
     { title: "Settings", url: "/dashboard/settings", icon: Settings },
@@ -38,6 +42,9 @@ const navByRole: Record<string, NavItem[]> = {
   instructor: [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
     { title: "My Courses", url: "/dashboard/courses", icon: BookOpen },
+    { title: "Attendance", url: "/dashboard/attendance", icon: CalendarCheck },
+    { title: "Assignments", url: "/dashboard/assignments", icon: FileEdit },
+    { title: "Marks", url: "/dashboard/marks", icon: Award },
     { title: "Quizzes", url: "/dashboard/quizzes", icon: ClipboardList },
     { title: "Live Classes", url: "/dashboard/live-classes", icon: Video },
     { title: "Students", url: "/dashboard/students", icon: Users },
@@ -47,6 +54,9 @@ const navByRole: Record<string, NavItem[]> = {
   student: [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
     { title: "My Courses", url: "/dashboard/courses", icon: BookOpen },
+    { title: "Attendance", url: "/dashboard/attendance", icon: CalendarCheck },
+    { title: "Assignments", url: "/dashboard/assignments", icon: FileEdit },
+    { title: "My Marks", url: "/dashboard/marks", icon: Award },
     { title: "Quizzes", url: "/dashboard/quizzes", icon: ClipboardList },
     { title: "Live Classes", url: "/dashboard/live-classes", icon: Video },
     { title: "Progress", url: "/dashboard/progress", icon: BarChart3 },
@@ -56,6 +66,8 @@ const navByRole: Record<string, NavItem[]> = {
   ],
   parent: [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+    { title: "Attendance", url: "/dashboard/attendance", icon: CalendarCheck },
+    { title: "Marks", url: "/dashboard/marks", icon: Award },
     { title: "Child Progress", url: "/dashboard/progress", icon: BarChart3 },
     { title: "Courses", url: "/dashboard/courses", icon: BookOpen },
     { title: "Reports", url: "/dashboard/reports", icon: FileText },
