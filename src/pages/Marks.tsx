@@ -42,7 +42,7 @@ export default function Marks() {
       setStudents((enrolled || []).map((e: any) => ({ id: e.user_id, name: e.profiles?.full_name || "Unknown" })));
     } else if (!isTeacher && user) {
       let query = supabase.from("marks").select("*, courses(title)").eq("student_id", user.id).order("created_at", { ascending: false });
-      if (selectedCourse) query = query.eq("course_id", selectedCourse);
+      if (selectedCourse && selectedCourse !== "all") query = query.eq("course_id", selectedCourse);
       const { data } = await query;
       setMarks(data || []);
     }
@@ -102,7 +102,7 @@ export default function Marks() {
         <Select value={selectedCourse} onValueChange={setSelectedCourse}>
           <SelectTrigger className="w-64"><SelectValue placeholder="Select Course" /></SelectTrigger>
           <SelectContent>
-            {!isTeacher && <SelectItem value="">All Courses</SelectItem>}
+            {!isTeacher && <SelectItem value="all">All Courses</SelectItem>}
             {courses.map(c => <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>)}
           </SelectContent>
         </Select>
