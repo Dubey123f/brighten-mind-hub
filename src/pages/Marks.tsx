@@ -102,7 +102,7 @@ export default function Marks() {
         <Select value={selectedCourse} onValueChange={setSelectedCourse}>
           <SelectTrigger className="w-64"><SelectValue placeholder="Select Course" /></SelectTrigger>
           <SelectContent>
-            {!isTeacher && <SelectItem value="">All Courses</SelectItem>}
+            {!isTeacher && <SelectItem value="all">All Courses</SelectItem>}
             {courses.map(c => <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>)}
           </SelectContent>
         </Select>
