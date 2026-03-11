@@ -92,7 +92,7 @@ export default function Attendance() {
         .select("*, courses(title)")
         .eq("student_id", user.id)
         .order("date", { ascending: false });
-      if (selectedCourse) query = query.eq("course_id", selectedCourse);
+      if (selectedCourse && selectedCourse !== "all") query = query.eq("course_id", selectedCourse);
       const { data } = await query;
       setRecords((data || []).map((r: any) => ({ ...r, course_title: r.courses?.title })));
       setLoading(false);
