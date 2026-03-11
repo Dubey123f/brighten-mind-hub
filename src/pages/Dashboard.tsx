@@ -47,7 +47,7 @@ function AdminDashboard() {
 
       // Recent activity: latest enrollments, courses, and user signups
       const [recentEnrollments, recentCourses, recentUsers] = await Promise.all([
-        supabase.from("enrollments").select("enrolled_at, courses(title), profiles!enrollments_user_id_fkey(full_name)").order("enrolled_at", { ascending: false }).limit(3),
+        supabase.from("enrollments").select("enrolled_at, courses(title), profiles!enrollments_user_id_profiles_fkey(full_name)").order("enrolled_at", { ascending: false }).limit(3),
         supabase.from("courses").select("title, created_at").order("created_at", { ascending: false }).limit(2),
         supabase.from("profiles").select("full_name, created_at").order("created_at", { ascending: false }).limit(2),
       ]);

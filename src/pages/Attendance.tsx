@@ -61,7 +61,7 @@ export default function Attendance() {
     const load = async () => {
       const { data } = await supabase
         .from("enrollments")
-        .select("user_id, profiles!enrollments_user_id_fkey(full_name)")
+        .select("user_id, profiles!enrollments_user_id_profiles_fkey(full_name)")
         .eq("course_id", selectedCourse);
       const list = (data || []).map((e: any) => ({
         id: e.user_id,

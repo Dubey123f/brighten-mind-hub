@@ -38,7 +38,7 @@ export default function Marks() {
     if (isTeacher && selectedCourse) {
       const { data } = await supabase.from("marks").select("*, profiles!marks_student_id_profiles_fkey(full_name)").eq("course_id", selectedCourse).order("exam_name");
       setMarks(data || []);
-      const { data: enrolled } = await supabase.from("enrollments").select("user_id, profiles!enrollments_user_id_fkey(full_name)").eq("course_id", selectedCourse);
+      const { data: enrolled } = await supabase.from("enrollments").select("user_id, profiles!enrollments_user_id_profiles_fkey(full_name)").eq("course_id", selectedCourse);
       setStudents((enrolled || []).map((e: any) => ({ id: e.user_id, name: e.profiles?.full_name || "Unknown" })));
     } else if (!isTeacher && user) {
       let query = supabase.from("marks").select("*, courses(title)").eq("student_id", user.id).order("created_at", { ascending: false });
