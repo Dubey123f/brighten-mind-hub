@@ -231,7 +231,7 @@ export default function Attendance() {
         <Select value={selectedCourse} onValueChange={setSelectedCourse}>
           <SelectTrigger className="w-64"><SelectValue placeholder="All Courses" /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Courses</SelectItem>
+            <SelectItem value="all">All Courses</SelectItem>
             {courses.map(c => <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>)}
           </SelectContent>
         </Select>
