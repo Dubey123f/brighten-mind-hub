@@ -97,7 +97,7 @@ export default function Assignments() {
   const loadSubmissions = async (assignmentId: string) => {
     const { data } = await supabase
       .from("assignment_submissions")
-      .select("*, profiles!assignment_submissions_student_id_fkey(full_name)")
+      .select("*, profiles!assignment_submissions_student_id_profiles_fkey(full_name)")
       .eq("assignment_id", assignmentId);
     setSubmissionsList(data || []);
   };
