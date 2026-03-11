@@ -159,7 +159,12 @@ export default function Assignments() {
         <div className="grid gap-4">
           {assignments.map(a => {
             const sub = submissions[a.id];
-            const isPastDue = a.due_date && new Date(a.due_date) < new Date();
+            const dueDate = a.due_date ? new Date(a.due_date) : null;
+            const isPastDue = dueDate ? (() => {
+              const endOfDueDay = new Date(dueDate);
+              endOfDueDay.setHours(23, 59, 59, 999);
+              return endOfDueDay < new Date();
+            })() : false;
             return (
               <div key={a.id} className="bg-card rounded-2xl p-5 shadow-card">
                 <div className="flex items-start justify-between">
