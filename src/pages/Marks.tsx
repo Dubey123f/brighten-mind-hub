@@ -36,7 +36,7 @@ export default function Marks() {
   const loadMarks = async () => {
     setLoading(true);
     if (isTeacher && selectedCourse) {
-      const { data } = await supabase.from("marks").select("*, profiles!marks_student_id_fkey(full_name)").eq("course_id", selectedCourse).order("exam_name");
+      const { data } = await supabase.from("marks").select("*, profiles!marks_student_id_profiles_fkey(full_name)").eq("course_id", selectedCourse).order("exam_name");
       setMarks(data || []);
       const { data: enrolled } = await supabase.from("enrollments").select("user_id, profiles!enrollments_user_id_fkey(full_name)").eq("course_id", selectedCourse);
       setStudents((enrolled || []).map((e: any) => ({ id: e.user_id, name: e.profiles?.full_name || "Unknown" })));
