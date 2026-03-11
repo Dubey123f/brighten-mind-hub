@@ -17,7 +17,7 @@ export default function StudentsPage() {
       const courseIds = courses.map(c => c.id);
       const { data } = await supabase
         .from("enrollments")
-        .select("progress, courses(title), profiles!enrollments_user_id_fkey(full_name)")
+        .select("progress, courses(title), profiles!enrollments_user_id_profiles_fkey(full_name)")
         .in("course_id", courseIds);
       setStudents(data || []);
     };

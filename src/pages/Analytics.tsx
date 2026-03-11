@@ -79,7 +79,7 @@ export default function Analytics() {
   }, []);
 
   const handleExport = async () => {
-    const { data } = await supabase.from("enrollments").select("user_id, course_id, progress, enrolled_at, completed_at, courses(title), profiles!enrollments_user_id_fkey(full_name)");
+    const { data } = await supabase.from("enrollments").select("user_id, course_id, progress, enrolled_at, completed_at, courses(title), profiles!enrollments_user_id_profiles_fkey(full_name)");
     if (!data || data.length === 0) { toast.info("No data to export"); return; }
     exportToCSV(data.map((d: any) => ({
       student: (d.profiles as any)?.full_name || "Unknown",

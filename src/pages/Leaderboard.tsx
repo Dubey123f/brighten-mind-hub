@@ -9,7 +9,7 @@ export default function Leaderboard() {
     const load = async () => {
       const { data } = await supabase
         .from("user_points")
-        .select("points, streak_days, profiles!user_points_user_id_fkey(full_name)")
+        .select("points, streak_days, profiles!user_points_user_id_profiles_fkey(full_name)")
         .order("points", { ascending: false })
         .limit(20);
       setLeaders(data || []);

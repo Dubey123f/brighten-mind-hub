@@ -11,7 +11,7 @@ export default function Announcements() {
   const [newAnn, setNewAnn] = useState({ title: "", content: "" });
 
   const load = async () => {
-    const { data } = await supabase.from("announcements").select("*, profiles!announcements_user_id_fkey(full_name)").order("created_at", { ascending: false });
+    const { data } = await supabase.from("announcements").select("*, profiles!announcements_user_id_profiles_fkey(full_name)").order("created_at", { ascending: false });
     setAnnouncements(data || []);
   };
 
