@@ -26,7 +26,7 @@ export default function Discussions() {
   const loadPosts = async (courseId: string) => {
     const { data } = await supabase
       .from("discussion_posts")
-      .select("*, profiles!discussion_posts_user_id_fkey(full_name)")
+      .select("*, profiles!discussion_posts_user_id_profiles_fkey(full_name)")
       .eq("course_id", courseId)
       .is("parent_id", null)
       .order("created_at", { ascending: false });
