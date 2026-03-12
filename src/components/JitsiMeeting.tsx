@@ -14,15 +14,26 @@ export default function JitsiMeeting({ roomName, displayName, onClose, isHost }:
   useEffect(() => {
     if (!jitsiContainerRef.current) return;
 
+    const JITSI_DOMAIN = "meet.ffmuc.net";
+
     const loadJitsiScript = () => {
       return new Promise<void>((resolve, reject) => {
         if ((window as any).JitsiMeetExternalAPI) {
           resolve();
           return;
         }
+
+        const existingScript = document.querySelector('script[data-jitsi-external-api="true"]') as HTMLScriptElement | null;
+        if (existingScript) {
+          existingScript.addEventListener("load", () => resolve(), { once: true });
+          existingScript.addEventListener("error", () => reject(new Error("Failed to load Jitsi script")), { once: true });
+          return;
+        }
+
         const script = document.createElement("script");
-        script.src = "https://meet.jit.si/external_api.js";
+        script.src = `https://${JITSI_DOMAIN}/external_api.js`;
         script.async = true;
+        script.dataset.jitsiExternalApi = "true";
         script.onload = () => resolve();
         script.onerror = () => reject(new Error("Failed to load Jitsi script"));
         document.head.appendChild(script);
@@ -33,14 +44,13 @@ export default function JitsiMeeting({ roomName, displayName, onClose, isHost }:
       try {
         await loadJitsiScript();
 
-        const domain = "meet.jit.si";
         const options = {
           roomName: `LovableLMS_${roomName}`,
           parentNode: jitsiContainerRef.current,
           width: "100%",
           height: "100%",
           userInfo: {
-            displayName: displayName,
+            displayName,
           },
           configOverwrite: {
             startWithAudioMuted: !isHost,
@@ -78,7 +88,7 @@ export default function JitsiMeeting({ roomName, displayName, onClose, isHost }:
           },
         };
 
-        apiRef.current = new (window as any).JitsiMeetExternalAPI(domain, options);
+        apiRef.current = new (window as any).JitsiMeetExternalAPI(JITSI_DOMAIN, options);
 
         apiRef.current.addListener("readyToClose", () => {
           onClose?.();
@@ -96,12 +106,7 @@ export default function JitsiMeeting({ roomName, displayName, onClose, isHost }:
         apiRef.current = null;
       }
     };
-  }, [roomName, displayName, isHost]);
+  }, [roomName, displayName, isHost, onClose]);
 
-  return (
-    <div
-      ref={jitsiContainerRef}
-      className="w-full h-full rounded-xl overflow-hidden bg-black"
-    />
-  );
+  return <div ref={jitsiContainerRef} className="w-full h-full rounded-xl overflow-hidden bg-muted" />;
 }
