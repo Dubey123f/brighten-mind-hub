@@ -44,12 +44,13 @@ export default function JitsiMeeting({ roomName, displayName, onClose, isHost }:
       try {
         await loadJitsiScript();
 
+        const options = {
           roomName: `LovableLMS_${roomName}`,
           parentNode: jitsiContainerRef.current,
           width: "100%",
           height: "100%",
           userInfo: {
-            displayName: displayName,
+            displayName,
           },
           configOverwrite: {
             startWithAudioMuted: !isHost,
@@ -87,7 +88,7 @@ export default function JitsiMeeting({ roomName, displayName, onClose, isHost }:
           },
         };
 
-        apiRef.current = new (window as any).JitsiMeetExternalAPI(domain, options);
+        apiRef.current = new (window as any).JitsiMeetExternalAPI(JITSI_DOMAIN, options);
 
         apiRef.current.addListener("readyToClose", () => {
           onClose?.();
@@ -105,12 +106,7 @@ export default function JitsiMeeting({ roomName, displayName, onClose, isHost }:
         apiRef.current = null;
       }
     };
-  }, [roomName, displayName, isHost]);
+  }, [roomName, displayName, isHost, onClose]);
 
-  return (
-    <div
-      ref={jitsiContainerRef}
-      className="w-full h-full rounded-xl overflow-hidden bg-black"
-    />
-  );
+  return <div ref={jitsiContainerRef} className="w-full h-full rounded-xl overflow-hidden bg-muted" />;
 }
