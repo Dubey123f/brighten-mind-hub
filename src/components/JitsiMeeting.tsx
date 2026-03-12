@@ -47,6 +47,10 @@ export default function JitsiMeeting({ roomName, displayName, onClose, isHost }:
             startWithVideoMuted: !isHost,
             disableDeepLinking: true,
             prejoinPageEnabled: false,
+            enableLobbyChat: false,
+            hideLobbyButton: true,
+            requireDisplayName: false,
+            enableInsecureRoomNameWarning: false,
             toolbarButtons: [
               "microphone",
               "camera",
@@ -60,6 +64,10 @@ export default function JitsiMeeting({ roomName, displayName, onClose, isHost }:
               "settings",
               "filmstrip",
             ],
+            lobby: {
+              autoKnock: true,
+              enableChat: false,
+            },
           },
           interfaceConfigOverwrite: {
             SHOW_JITSI_WATERMARK: false,
