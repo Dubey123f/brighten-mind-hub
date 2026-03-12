@@ -59,6 +59,38 @@ export type Database = {
           },
         ]
       }
+      assignment_questions: {
+        Row: {
+          assignment_id: string
+          created_at: string
+          id: string
+          question_text: string
+          sort_order: number | null
+        }
+        Insert: {
+          assignment_id: string
+          created_at?: string
+          id?: string
+          question_text: string
+          sort_order?: number | null
+        }
+        Update: {
+          assignment_id?: string
+          created_at?: string
+          id?: string
+          question_text?: string
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignment_questions_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "assignments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assignment_submissions: {
         Row: {
           assignment_id: string
