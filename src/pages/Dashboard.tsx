@@ -281,14 +281,16 @@ function StudentDashboard() {
 // Parent Dashboard
 function ParentDashboard() {
   const { user } = useAuth();
-  const [childData, setChildData] = useState<{ name: string; courses: number; quizAvg: number; studyTime: number }[]>([]);
+  const [childData, setChildData] = useState<{ id: string; name: string; courses: number; quizAvg: number; studyTime: number }[]>([]);
+  const [childEmail, setChildEmail] = useState("");
+  const [linking, setLinking] = useState(false);
+  const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
     if (!user) return;
     const load = async () => {
-      // Get linked children
       const { data: links } = await supabase.from("parent_child_links").select("child_id").eq("parent_id", user.id);
-      if (!links || links.length === 0) return;
+      if (!links || links.length === 0) { setChildData([]); return; }
 
       const childIds = links.map((l: any) => l.child_id);
       const results: typeof childData = [];
@@ -305,6 +307,7 @@ function ParentDashboard() {
         const totalTime = (lessonProg.data || []).reduce((sum: number, lp: any) => sum + (lp.time_spent_seconds || 0), 0);
 
         results.push({
+          id: childId,
           name: profile.data?.full_name || "Child",
           courses: enrollments.count || 0,
           quizAvg: avgScore,
@@ -314,22 +317,78 @@ function ParentDashboard() {
       setChildData(results);
     };
     load();
-  }, [user]);
+  }, [user, refresh]);
+
+  const handleLinkChild = async () => {
+    if (!childEmail.trim()) return;
+    setLinking(true);
+    try {
+      const { data, error } = await supabase.rpc("link_parent_to_child", { child_email: childEmail.trim() });
+      if (error) throw error;
+      const result = data as any;
+      if (result?.success) {
+        toast.success(result.message || "Child linked successfully!");
+        setChildEmail("");
+        setRefresh(r => r + 1);
+      } else {
+        toast.error(result?.message || "Failed to link child");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Something went wrong");
+    }
+    setLinking(false);
+  };
+
+  const handleUnlink = async (childId: string) => {
+    const { error } = await supabase.from("parent_child_links").delete().eq("parent_id", user!.id).eq("child_id", childId);
+    if (error) {
+      toast.error("Could not unlink child");
+    } else {
+      toast.success("Child unlinked");
+      setRefresh(r => r + 1);
+    }
+  };
 
   return (
     <div>
       <h1 className="font-display text-2xl font-bold text-foreground mb-1">Parent Dashboard</h1>
       <p className="text-muted-foreground mb-6">Monitor your child's learning progress</p>
 
+      {/* Link Child Section */}
+      <div className="bg-card rounded-2xl p-5 shadow-card mb-6">
+        <h3 className="font-display font-semibold text-foreground mb-3">🔗 Link Child Account</h3>
+        <p className="text-sm text-muted-foreground mb-3">Enter your child's registered email to link their account</p>
+        <div className="flex gap-3">
+          <input
+            type="email"
+            value={childEmail}
+            onChange={e => setChildEmail(e.target.value)}
+            placeholder="child@example.com"
+            className="flex-1 px-3 py-2 rounded-lg border border-input bg-background text-foreground text-sm"
+            onKeyDown={e => e.key === "Enter" && handleLinkChild()}
+          />
+          <button
+            onClick={handleLinkChild}
+            disabled={linking || !childEmail.trim()}
+            className="px-5 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors"
+          >
+            {linking ? "Linking..." : "Link Child"}
+          </button>
+        </div>
+      </div>
+
       {childData.length === 0 ? (
         <div className="bg-card rounded-2xl p-12 text-center shadow-card">
           <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
           <h3 className="font-display font-semibold text-foreground mb-2">No Linked Children</h3>
-          <p className="text-muted-foreground">Link your child's account to view their progress.</p>
+          <p className="text-muted-foreground">Enter your child's email above to link their account.</p>
         </div>
-      ) : childData.map((child, idx) => (
-        <div key={idx} className="mb-8">
-          <h3 className="font-display font-semibold text-foreground mb-4">{child.name}</h3>
+      ) : childData.map((child) => (
+        <div key={child.id} className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-display font-semibold text-foreground">{child.name}</h3>
+            <button onClick={() => handleUnlink(child.id)} className="text-xs text-red-500 hover:underline">Unlink</button>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard icon={BookOpen} label="Enrolled Courses" value={child.courses} />
             <StatCard icon={BarChart3} label="Quiz Average" value={`${child.quizAvg}%`} />
