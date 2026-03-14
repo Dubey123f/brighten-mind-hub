@@ -60,6 +60,7 @@ const navByRole: Record<string, NavItem[]> = {
     { title: "Assignments", url: "/dashboard/assignments", icon: FileEdit },
     { title: "My Marks", url: "/dashboard/marks", icon: Award },
     { title: "Quizzes", url: "/dashboard/quizzes", icon: ClipboardList },
+    { title: "Online Exams", url: "/dashboard/online-exams", icon: Monitor },
     { title: "Live Classes", url: "/dashboard/live-classes", icon: Video },
     { title: "Progress", url: "/dashboard/progress", icon: BarChart3 },
     { title: "Leaderboard", url: "/dashboard/leaderboard", icon: Trophy },
