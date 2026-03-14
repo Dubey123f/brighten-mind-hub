@@ -911,6 +911,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_link_parent_to_child: {
+        Args: { child_email: string; parent_email: string }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
