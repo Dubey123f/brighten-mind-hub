@@ -29,6 +29,8 @@ import Attendance from "./pages/Attendance";
 import Assignments from "./pages/Assignments";
 import Marks from "./pages/Marks";
 import AdminPanel from "./pages/AdminPanel";
+import OnlineExams from "./pages/OnlineExams";
+import ExamPlayer from "./pages/ExamPlayer";
 import DashboardLayout from "./components/DashboardLayout";
 import NotFound from "./pages/NotFound";
 
