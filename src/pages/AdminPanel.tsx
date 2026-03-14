@@ -42,8 +42,14 @@ export default function AdminPanel() {
   };
 
   const loadLinks = async () => {
-    const { data } = await supabase.from("parent_child_links").select("*, parent:profiles!parent_child_links_parent_id_fkey(full_name, user_id), child:profiles!parent_child_links_child_id_fkey(full_name, user_id)");
-    setLinks(data || []);
+    const { data: linkData } = await supabase.from("parent_child_links").select("*");
+    if (!linkData || linkData.length === 0) { setLinks([]); return; }
+    // Fetch profile names for parents and children
+    const allIds = [...new Set([...linkData.map(l => l.parent_id), ...linkData.map(l => l.child_id)])];
+    const { data: profiles } = await supabase.from("profiles").select("user_id, full_name").in("user_id", allIds);
+    const nameMap: Record<string, string> = {};
+    (profiles || []).forEach(p => { nameMap[p.user_id] = p.full_name; });
+    setLinks(linkData.map(l => ({ ...l, parent_name: nameMap[l.parent_id] || "Unknown", child_name: nameMap[l.child_id] || "Unknown" })));
   };
 
   useEffect(() => { loadUsers(); loadLinks(); }, []);
