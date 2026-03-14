@@ -35,6 +35,7 @@ const navByRole: Record<string, NavItem[]> = {
     { title: "Attendance", url: "/dashboard/attendance", icon: CalendarCheck },
     { title: "Assignments", url: "/dashboard/assignments", icon: FileEdit },
     { title: "Marks", url: "/dashboard/marks", icon: Award },
+    { title: "Online Exams", url: "/dashboard/online-exams", icon: Monitor },
     { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
     { title: "Announcements", url: "/dashboard/announcements", icon: Bell },
     { title: "Settings", url: "/dashboard/settings", icon: Settings },
