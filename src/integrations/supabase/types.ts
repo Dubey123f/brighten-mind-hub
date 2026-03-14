@@ -394,6 +394,103 @@ export type Database = {
           },
         ]
       }
+      exam_attempts: {
+        Row: {
+          ai_flags: Json | null
+          answers: Json | null
+          completed_at: string | null
+          created_at: string
+          exam_id: string
+          id: string
+          is_submitted: boolean
+          max_score: number | null
+          score: number | null
+          started_at: string
+          tab_switches: number | null
+          user_id: string
+        }
+        Insert: {
+          ai_flags?: Json | null
+          answers?: Json | null
+          completed_at?: string | null
+          created_at?: string
+          exam_id: string
+          id?: string
+          is_submitted?: boolean
+          max_score?: number | null
+          score?: number | null
+          started_at?: string
+          tab_switches?: number | null
+          user_id: string
+        }
+        Update: {
+          ai_flags?: Json | null
+          answers?: Json | null
+          completed_at?: string | null
+          created_at?: string
+          exam_id?: string
+          id?: string
+          is_submitted?: boolean
+          max_score?: number | null
+          score?: number | null
+          started_at?: string
+          tab_switches?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_attempts_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "online_exams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exam_questions: {
+        Row: {
+          correct_answer: string | null
+          created_at: string
+          exam_id: string
+          id: string
+          options: Json | null
+          points: number
+          question_text: string
+          question_type: string
+          sort_order: number | null
+        }
+        Insert: {
+          correct_answer?: string | null
+          created_at?: string
+          exam_id: string
+          id?: string
+          options?: Json | null
+          points?: number
+          question_text: string
+          question_type?: string
+          sort_order?: number | null
+        }
+        Update: {
+          correct_answer?: string | null
+          created_at?: string
+          exam_id?: string
+          id?: string
+          options?: Json | null
+          points?: number
+          question_text?: string
+          question_type?: string
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_questions_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "online_exams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lesson_progress: {
         Row: {
           completed: boolean | null
@@ -628,6 +725,62 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "modules_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      online_exams: {
+        Row: {
+          ai_proctoring: boolean
+          course_id: string
+          created_at: string
+          created_by: string
+          description: string | null
+          duration_minutes: number
+          end_time: string | null
+          exam_type: string
+          id: string
+          is_active: boolean
+          max_marks: number
+          start_time: string | null
+          title: string
+        }
+        Insert: {
+          ai_proctoring?: boolean
+          course_id: string
+          created_at?: string
+          created_by: string
+          description?: string | null
+          duration_minutes?: number
+          end_time?: string | null
+          exam_type?: string
+          id?: string
+          is_active?: boolean
+          max_marks?: number
+          start_time?: string | null
+          title: string
+        }
+        Update: {
+          ai_proctoring?: boolean
+          course_id?: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          duration_minutes?: number
+          end_time?: string | null
+          exam_type?: string
+          id?: string
+          is_active?: boolean
+          max_marks?: number
+          start_time?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "online_exams_course_id_fkey"
             columns: ["course_id"]
             isOneToOne: false
             referencedRelation: "courses"
