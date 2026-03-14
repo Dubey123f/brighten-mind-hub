@@ -261,8 +261,8 @@ export default function AdminPanel() {
                 <tbody>
                   {links.map(link => (
                     <tr key={link.id} className="border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
-                      <td className="p-4 text-sm text-foreground">{(link as any).parent?.full_name || "Unknown"}</td>
-                      <td className="p-4 text-sm text-foreground">{(link as any).child?.full_name || "Unknown"}</td>
+                      <td className="p-4 text-sm text-foreground">{(link as any).parent_name}</td>
+                      <td className="p-4 text-sm text-foreground">{(link as any).child_name}</td>
                       <td className="p-4 text-sm text-muted-foreground">{new Date(link.created_at).toLocaleDateString()}</td>
                       <td className="p-4">
                         <Button variant="ghost" size="sm" onClick={() => unlinkParentChild(link.id)} className="text-destructive hover:text-destructive">
