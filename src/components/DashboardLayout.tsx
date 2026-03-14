@@ -17,7 +17,7 @@ import {
 import {
   GraduationCap, LayoutDashboard, BookOpen, Users, BarChart3,
   Trophy, MessageSquare, Settings, LogOut, FileText, HelpCircle,
-  Bell, User, Brain, Award, ClipboardList, Video, CalendarCheck, FileEdit, ShieldCheck,
+  Bell, User, Brain, Award, ClipboardList, Video, CalendarCheck, FileEdit, ShieldCheck, Monitor,
 } from "lucide-react";
 
 interface NavItem {
@@ -35,6 +35,7 @@ const navByRole: Record<string, NavItem[]> = {
     { title: "Attendance", url: "/dashboard/attendance", icon: CalendarCheck },
     { title: "Assignments", url: "/dashboard/assignments", icon: FileEdit },
     { title: "Marks", url: "/dashboard/marks", icon: Award },
+    { title: "Online Exams", url: "/dashboard/online-exams", icon: Monitor },
     { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
     { title: "Announcements", url: "/dashboard/announcements", icon: Bell },
     { title: "Settings", url: "/dashboard/settings", icon: Settings },
@@ -46,6 +47,7 @@ const navByRole: Record<string, NavItem[]> = {
     { title: "Assignments", url: "/dashboard/assignments", icon: FileEdit },
     { title: "Marks", url: "/dashboard/marks", icon: Award },
     { title: "Quizzes", url: "/dashboard/quizzes", icon: ClipboardList },
+    { title: "Online Exams", url: "/dashboard/online-exams", icon: Monitor },
     { title: "Live Classes", url: "/dashboard/live-classes", icon: Video },
     { title: "Students", url: "/dashboard/students", icon: Users },
     { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
@@ -58,6 +60,7 @@ const navByRole: Record<string, NavItem[]> = {
     { title: "Assignments", url: "/dashboard/assignments", icon: FileEdit },
     { title: "My Marks", url: "/dashboard/marks", icon: Award },
     { title: "Quizzes", url: "/dashboard/quizzes", icon: ClipboardList },
+    { title: "Online Exams", url: "/dashboard/online-exams", icon: Monitor },
     { title: "Live Classes", url: "/dashboard/live-classes", icon: Video },
     { title: "Progress", url: "/dashboard/progress", icon: BarChart3 },
     { title: "Leaderboard", url: "/dashboard/leaderboard", icon: Trophy },
